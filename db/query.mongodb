@@ -1,0 +1,373 @@
+use("db_campus_insidencias")
+db.createCollection("counter")
+db.counter.insertMany([
+    {ID: "computadorID", sequenceValue:0},
+    {ID: "inventarioID", sequenceValue:0},
+    {ID: "insidenciaID", sequenceValue:0},
+])
+
+use("db_campus_insidencias")
+db.createCollection("computador", {
+    validator:{
+        $jsonSchema:{
+            bsonType:"object",
+            additionalProperties: false,
+            required:["ID"],
+            properties:{
+                _id:{
+                    bsonType: "objectId"
+                },
+                ID:{
+                    bsonType:"int"
+                },
+               /*  monitor:{
+                    bsonType: "object",
+                    additionalProperties: false,
+                    required:["codigo", "estado"],
+                    properties:{
+                        codigo:{
+                            bsonType: "string",
+                            description:"La propiedad 'codigo' debe ser tipo string y no sobrepasar [5]caracteres"
+                        },
+                        estado:{
+                            bsonType: "string",
+                            enum: ["bueno", "malo", "funcional"],
+                            description:"la propiedad 'estado' solo recibe: [bueno,malo,funcional]"
+                        }
+                    }
+                },
+                teclado:{
+                    bsonType: "object",
+                    additionalProperties: false,
+                    required:["codigo", "estado"],
+                    properties:{
+                        codigo:{
+                            bsonType: "string",                            description:"La propiedad 'codigo' debe ser tipo string y no sobrepasar [5]caracteres"
+                        },
+                        estado:{
+                            bsonType: "string",
+                            enum: ["bueno", "malo", "funcional"],
+                            description:"la propiedad 'estado' solo recibe: [bueno,malo,funcional]"
+                        }
+                    }
+                },
+                mouse:{
+                    bsonType: "object",
+                    additionalProperties: false,
+                    required:["codigo", "estado"],
+                    properties:{
+                        codigo:{
+                            bsonType: "string",                            description:"La propiedad 'codigo' debe ser tipo string y no sobrepasar [5]caracteres"
+                        },
+                        estado:{
+                            bsonType: "string",
+                            enum: ["bueno", "malo", "funcional"],
+                            description:"la propiedad 'estado' solo recibe: [bueno,malo,funcional]"
+                        }
+                    }
+                } */
+            }
+        }
+    }
+})
+
+use("db_campus_insidencias")
+db.createCollection("inventario", {
+    validator:{
+        $jsonSchema:{
+            bsonType:"object",
+            additionalProperties: false,
+            required:["id_computador", "area"],
+            properties:{
+                _id:{
+                    bsonType:"int"
+                },
+                ID:{
+                    bsonType:"int"
+                },
+                id_computador:{
+                    bsonType: "int",
+                    description:"La propiedad 'id_computador' debe ser un int"
+                },
+                area:{
+                    bsonType: "object",
+                    additionalProperties: false,
+                    required:["nombre", "salon"],
+                    properties:{
+                        nombre:{
+                            bsonType: "string",
+                            description:"La propiedad 'nombre' debe ser tipo string"
+                        },
+                        salon:{
+                            bsonType: "string",
+                            description:"la propiedad 'salon' debe ser un string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+
+use("db_campus_insidencias")
+db.createCollection("insidencia", {
+    validator:{
+        $jsonSchema:{
+            bsonType:"object",
+            additionalProperties: false,
+            required:["id_trainer","categoria","tipo", "id_inventario", "descripcion", "fecha"],
+            properties:{
+                _id:{
+                    bsonType:"int"
+                },
+                ID:{
+                    bsonType:"int"
+                },
+                id_trainer:{
+                    bsonType: "int",
+                    description:"La propiedad 'id_trainer' debe ser un int"
+                },
+                categoria:{
+                    bsonType: "string",
+                    enum:["Hardware", "Software"],
+                    description:"La propiedad 'categoria' debe ser un string. solo permite [Hardware,Software]"
+                },
+                tipo:{
+                    bsonType: "int",
+                    enum:["Leve", "Moderada", "Critica"],
+                    description:"La propiedad 'tipo' debe ser un string. solo permite [Leve,Moderada,Critica]"
+                
+                },
+                id_inventario:{
+                    bsonType: "int",
+                    description:"La propiedad 'id_inventario' debe ser un int"
+                },
+                descripcion:{
+                    bsonType: "string",
+                    maxLength: 300,
+                    description:"La propiedad 'descripcion' debe ser un string y no superar [300]caracteres"
+                },
+                fecha:{
+                    bsonType: "date",
+                    description:"La propiedad 'fecha' debe ser tipo date"
+                }
+            }
+        }
+    }
+})
+
+use("db_campus_insidencias")
+db.createCollection("trainer", {
+    validator:{
+        $jsonSchema:{
+            bsonType:"object",
+            additionalProperties: false,
+            required:["cc","nombreCompleto","emailPersonal", "emailCorporativo", "telMovil", "telMovilEmpresa"],
+            properties:{
+                _id:{
+                    bsonType:"int"
+                },
+                cc:{
+                    bsonType:"int",
+                    description:"La propiedad 'cc' debe ser tipo int"
+                },
+                nombreCompleto:{
+                    bsonType: "string",
+                    maxLength: 60,
+                    pattern: "^[a-zA-Z ]+$",
+                    description:"La propiedad 'nombreCompleto' debe ser un string y no superar [60]caracteres"
+                },
+                emailPersonal:{
+                    bsonType: "string",
+                    maxLength: 60,
+                    pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#_@\\s-]+$",
+                    description:"La propiedad 'emailPersonal' debe ser un string. y no superar [60]caracteres"
+                },
+                emailCorporativo:{
+                    bsonType: "string",
+                    maxLength: 60,
+                    pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#_@\\s-]+$",
+                    description:"La propiedad 'emailCorporativo' debe ser un string. y no superar [60]caracteres"
+                                
+                },
+                telMovil:{
+                    bsonType: "string",
+                    maxLength: 10,
+                    pattern: "^[0-9]+$",
+                    description:"La propiedad 'telMovil' debe ser un string numerico y no sobrepasar [10]caracteres"
+                },
+                telRecidencial:{
+                    bsonType: "string",
+                    maxLength: 7,
+                    pattern: "^[0-9]+$",
+                    description:"La propiedad 'telRecidencial' debe ser un string numerico y no sobrepasar [7]caracteres"
+                },
+                telMovilEmpresa:{
+                    bsonType: "string",
+                    maxLength: 10,
+                    pattern: "^[0-9]+$",
+                    description:"La propiedad 'telMovilEmpresa' debe ser un string numerico y no sobrepasar [10]caracteres"
+                }
+            }
+        }
+    }
+})
+
+//AGREGAR DATOS
+//Funcion IDAutoIncrementable
+use("db_campus_insidencias");
+function autoIncrementID(coleccion) {
+  const sequenceDocument = db.counter.findOneAndUpdate(
+    { ID: `${coleccion}ID` },
+    { $inc: { sequenceValue: 1 } },
+    { returnDocument: "after" }
+  );
+  return sequenceDocument.sequenceValue;
+}
+
+//COMPUTADOR
+use("db_campus_insidencias");
+db.computador.insertMany([
+    {
+        ID:1,
+      
+}
+]);
+
+//INVENTARIO
+db.inventario.insertMany([
+    {
+    ID: autoIncrementID("inventario"),
+    "id_computador": 1,
+    "area": {
+    "nombre": "Training",
+    "salon": "Apolo"
+    }
+},
+{
+    ID: autoIncrementID("inventario"),
+    "id_computador": 2,
+    "area": {
+    "nombre": "Training",
+    "salon": "Sputnik"
+    }
+},
+{
+    ID: autoIncrementID("inventario"),
+    "id_computador": 3,
+    "area": {
+    "nombre": "Review 1",
+    "salon": "Corvus"
+    }
+},
+{
+    ID: autoIncrementID("inventario"),
+    "id_computador": 4,
+    "area": {
+    "nombre": "Review 2",
+    "salon": "Endor"
+    }
+},
+{
+    ID: autoIncrementID("inventario"),
+    "id_computador": 5,
+    "area": {
+    "nombre": "Training",
+    "salon": "Artemis"
+    }
+}
+]);
+
+//INSIDENCIA
+db.insidencia.insertMany([
+    {
+    ID: autoIncrementID("insidencia"),
+    "id_trainer": 1000000003,
+    "categoria": "Hardware",
+    "tipo": "Moderada",
+    "id_inventario": 1,
+    "descripcion": "El monitor no se enciende",
+    "fecha": new Date()
+},
+{
+    ID: autoIncrementID("insidencia"),
+    "id_trainer": 1000000004,
+    "categoria": "Software",
+    "tipo": "Critica",
+    "id_inventario": 2,
+    "descripcion": "El sistema operativo no arranca",
+    "fecha": new Date()
+},
+{
+    ID: autoIncrementID("insidencia"),
+    "id_trainer": 1000000002,
+    "categoria": "Hardware",
+    "tipo": "Leve",
+    "id_inventario": 3,
+    "descripcion": "El teclado no funciona",
+    "fecha": new Date()
+},
+{
+    ID: autoIncrementID("insidencia"),
+    "id_trainer": 1000000001,
+    "categoria": "Software",
+    "tipo": "Moderada",
+    "id_inventario": 4,
+    "descripcion": "El navegador no abre las paginas web",
+    "fecha": new Date()
+},
+{
+    ID: autoIncrementID("insidencia"),
+    "id_trainer": 1000000000,
+    "categoria": "Hardware",
+    "tipo": "Leve",
+    "id_inventario": 5,
+    "descripcion": "El mouse no funciona correctamente",
+    "fecha": new Date()
+}
+]);
+
+
+//AGREGAR DATOS
+db.trainer.insertMany([
+{
+    "cc": 1000000000,
+    "nombreCompleto": "Juan Perez",
+    "emailPersonal": "juanperez@gmail.com",
+    "emailCorporativo": "juanperez@campus.com",
+    "telMovil": "3112223344",
+    "telMovilEmpresa": "3115556677"
+},
+{
+    "cc": 1000000001,
+    "nombreCompleto": "Maria L0pez",
+    "emailPersonal": "marialopez@gmail.com",
+    "emailCorporativo": "marialopez@campus.com",
+    "telMovil": "3118889900",
+    "telMovilEmpresa": "3114445566"
+},
+{
+    "cc": 1000000002,
+    "nombreCompleto": "Pedro Gonzalez",
+    "emailPersonal": "pedrogonzalez@gmail.com",
+    "emailCorporativo": "pedrogonzalez@campus.com",
+    "telMovil": "3116667788",
+    "telMovilEmpresa": "3117778899"
+},
+{
+    "cc": 1000000003,
+    "nombreCompleto": "Ana Garcia",
+    "emailPersonal": "anagarcia@gmail.com",
+    "emailCorporativo": "anagarcia@campus.com",
+    "telMovil": "3119990011",
+    "telMovilEmpresa": "3112223344"
+},
+{
+    "cc": 1000000004,
+    "nombreCompleto": "Luisa Hernandez",
+    "emailPersonal": "luisahernandez@gmail.com",
+    "emailCorporativo": "luisahernandez@campus.com",
+    "telMovil": "3115556677",
+    "telMovilEmpresa": "3118889900"
+}
+]);
