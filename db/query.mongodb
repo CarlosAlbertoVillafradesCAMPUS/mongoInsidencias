@@ -12,7 +12,7 @@ db.createCollection("computador", {
         $jsonSchema:{
             bsonType:"object",
             additionalProperties: false,
-            required:["ID"],
+            required:["monitor", "teclado","mouse"],
             properties:{
                 _id:{
                     bsonType: "objectId"
@@ -20,7 +20,7 @@ db.createCollection("computador", {
                 ID:{
                     bsonType:"int"
                 },
-               /*  monitor:{
+                monitor:{
                     bsonType: "object",
                     additionalProperties: false,
                     required:["codigo", "estado"],
@@ -42,7 +42,8 @@ db.createCollection("computador", {
                     required:["codigo", "estado"],
                     properties:{
                         codigo:{
-                            bsonType: "string",                            description:"La propiedad 'codigo' debe ser tipo string y no sobrepasar [5]caracteres"
+                            bsonType: "string",
+                            description:"La propiedad 'codigo' debe ser tipo string y no sobrepasar [5]caracteres"
                         },
                         estado:{
                             bsonType: "string",
@@ -57,7 +58,8 @@ db.createCollection("computador", {
                     required:["codigo", "estado"],
                     properties:{
                         codigo:{
-                            bsonType: "string",                            description:"La propiedad 'codigo' debe ser tipo string y no sobrepasar [5]caracteres"
+                            bsonType: "string",
+                            description:"La propiedad 'codigo' debe ser tipo string y no sobrepasar [5]caracteres"
                         },
                         estado:{
                             bsonType: "string",
@@ -65,7 +67,23 @@ db.createCollection("computador", {
                             description:"la propiedad 'estado' solo recibe: [bueno,malo,funcional]"
                         }
                     }
-                } */
+                },
+                diadema:{
+                    bsonType: "object",
+                    additionalProperties: false,
+                    required:["codigo", "estado"],
+                    properties:{
+                        codigo:{
+                            bsonType: "string",
+                            description:"La propiedad 'codigo' debe ser tipo string y no sobrepasar [5]caracteres"
+                        },
+                        estado:{
+                            bsonType: "string",
+                            enum: ["bueno", "malo", "funcional"],
+                            description:"la propiedad 'estado' solo recibe: [bueno,malo,funcional]"
+                        }
+                    }
+                }
             }
         }
     }
@@ -80,7 +98,7 @@ db.createCollection("inventario", {
             required:["id_computador", "area"],
             properties:{
                 _id:{
-                    bsonType:"int"
+                    bsonType:"objectId"
                 },
                 ID:{
                     bsonType:"int"
@@ -118,7 +136,7 @@ db.createCollection("insidencia", {
             required:["id_trainer","categoria","tipo", "id_inventario", "descripcion", "fecha"],
             properties:{
                 _id:{
-                    bsonType:"int"
+                    bsonType:"objectId"
                 },
                 ID:{
                     bsonType:"int"
@@ -133,7 +151,7 @@ db.createCollection("insidencia", {
                     description:"La propiedad 'categoria' debe ser un string. solo permite [Hardware,Software]"
                 },
                 tipo:{
-                    bsonType: "int",
+                    bsonType: "string",
                     enum:["Leve", "Moderada", "Critica"],
                     description:"La propiedad 'tipo' debe ser un string. solo permite [Leve,Moderada,Critica]"
                 
@@ -165,7 +183,7 @@ db.createCollection("trainer", {
             required:["cc","nombreCompleto","emailPersonal", "emailCorporativo", "telMovil", "telMovilEmpresa"],
             properties:{
                 _id:{
-                    bsonType:"int"
+                    bsonType:"objectId"
                 },
                 cc:{
                     bsonType:"int",
@@ -229,10 +247,101 @@ function autoIncrementID(coleccion) {
 use("db_campus_insidencias");
 db.computador.insertMany([
     {
-        ID:1,
-      
-}
-]);
+      "ID": autoIncrementID("computador"),
+      "monitor": {
+        "codigo": "ABC123",
+        "estado": "bueno"
+      },
+      "teclado": {
+        "codigo": "DEF456",
+        "estado": "funcional"
+      },
+      "mouse": {
+        "codigo": "GHI789",
+        "estado": "malo"
+      },
+      "diadema": {
+        "codigo": "JKL012",
+        "estado": "bueno"
+      }
+    },
+    {
+      "ID": autoIncrementID("computador"),
+      "monitor": {
+        "codigo": "XYZ987",
+        "estado": "funcional"
+      },
+      "teclado": {
+        "codigo": "LMN678",
+        "estado": "bueno"
+      },
+      "mouse": {
+        "codigo": "OPQ543",
+        "estado": "malo"
+      },
+      "diadema": {
+        "codigo": "RST234",
+        "estado": "bueno"
+      }
+    },
+    {
+      "ID": autoIncrementID("computador"),
+      "monitor": {
+        "codigo": "MNO876",
+        "estado": "bueno"
+      },
+      "teclado": {
+        "codigo": "PQRS789",
+        "estado": "funcional"
+      },
+      "mouse": {
+        "codigo": "TUV654",
+        "estado": "malo"
+      },
+      "diadema": {
+        "codigo": "WXYZ321",
+        "estado": "funcional"
+      }
+    },
+    {
+      "ID": autoIncrementID("computador"),
+      "monitor": {
+        "codigo": "CBA987",
+        "estado": "malo"
+      },
+      "teclado": {
+        "codigo": "DEF876",
+        "estado": "bueno"
+      },
+      "mouse": {
+        "codigo": "GHI765",
+        "estado": "funcional"
+      },
+      "diadema": {
+        "codigo": "JKL654",
+        "estado": "malo"
+      }
+    },
+    {
+      "ID": autoIncrementID("computador"),
+      "monitor": {
+        "codigo": "XYZ654",
+        "estado": "funcional"
+      },
+      "teclado": {
+        "codigo": "LMN543",
+        "estado": "malo"
+      },
+      "mouse": {
+        "codigo": "OPQ432",
+        "estado": "bueno"
+      },
+      "diadema": {
+        "codigo": "RST321",
+        "estado": "funcional"
+      }
+    }
+  ]);
 
 //INVENTARIO
 db.inventario.insertMany([
@@ -340,7 +449,7 @@ db.trainer.insertMany([
 },
 {
     "cc": 1000000001,
-    "nombreCompleto": "Maria L0pez",
+    "nombreCompleto": "Maria Lopez",
     "emailPersonal": "marialopez@gmail.com",
     "emailCorporativo": "marialopez@campus.com",
     "telMovil": "3118889900",
